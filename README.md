@@ -81,6 +81,15 @@ Q query = new Q(Account.SObjectType)
 System.debug(query.build());
 //SELECT Id FROM Account WHERE DISTANCE(BillingAddress, GEOLOCATION(37.775, -122.418), 'km') < 20
 ```
+## Date Literals
+
+```java
+Q query = new Q(Account.SObjectType)
+    .add(Q.condition('CreatedDate').isLessThan(Q.dateLiteral(QDateLiteral.Value.LAST_N_DAYS, 7)));
+
+System.debug(query.build());
+//SELECT Id FROM Account WHERE CreatedDate < LAST_N_DAYS:7
+```
 
 ## Roadmap
 
