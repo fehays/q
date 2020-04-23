@@ -36,6 +36,22 @@ public class Q {
 	}
 
 	/*
+	 * Instantiate a Distance object using location fields
+	 */
+	public static QDistance distance(String fromFieldName, String toFieldName, QDistance.Unit unit) {
+		QDistance dist = new QDistance(fromFieldName, toFieldName, unit);
+		return dist;
+	}
+
+	/*
+	 * Instantiate a Distance object using lat/lon
+	 */
+	public static QDistance distance(String fromFieldName, Decimal lat, Decimal lon, QDistance.Unit unit) {
+		QDistance dist = new QDistance(fromFieldName, lat, lon, unit);
+		return dist;
+	}
+
+	/*
 	 * Instantiate a DateLiteral object
 	 */
 	public static QDateLiteral dateLiteral(QDateLiteral.Value literal) {
