@@ -221,15 +221,15 @@ private class QTest {
         Database.query(query);
     }
 
-  @isTest
-	static void testDistance() {
+    @isTest
+    static void testDistance() {
 
-		String query =
-			new Q(Account.SObjectType)
-				.add(Q.distanceFrom('BillingAddress').to(37.775, -122.418).isLessThan(20))
-				.build();
+        String query =
+            new Q(Account.SObjectType)
+                .add(Q.distanceFrom('BillingAddress').to(37.775, -122.418).isLessThan(20))
+                .build();
 
-		System.assertEquals('SELECT Id FROM Account WHERE DISTANCE(BillingAddress, GEOLOCATION(37.775, -122.418), \'mi\') < 20', query);
-		Database.query(query);
-	}
+        System.assertEquals('SELECT Id FROM Account WHERE DISTANCE(BillingAddress, GEOLOCATION(37.775, -122.418), \'mi\') < 20', query);
+        Database.query(query);
+    }
 }
