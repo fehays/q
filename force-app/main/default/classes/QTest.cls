@@ -29,6 +29,10 @@ private class QTest {
 
     @IsTest
     static void testSelectFieldsUsingFieldSet() {
+        // skip this test of the org doesn't have the example fieldset
+        if (!Schema.SObjectType.Account.fieldSets.getMap().containsKey('Example')) {
+            return;
+        }
         String query =
             new Q(Account.SObjectType)
                 .selectFields(SObjectType.Account.fieldSets.Example)
