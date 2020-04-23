@@ -67,7 +67,7 @@ System.debug(query.build());
 Using a custom field as the destiation
 ```java
 Q query = new Q(Account.SObjectType)
-    .add(Q.distance('BillingAddress', 'CustomLocationField__c', QDistance.Unit.mi).isLessThan(20));
+    .add(Q.distanceFrom('BillingAddress').to('CustomLocationField__c').isLessThan(20));
 
 System.debug(query.build());
 //SELECT Id FROM Account WHERE DISTANCE(BillingAddress, CustomLocationField__c) < 20
@@ -76,10 +76,10 @@ System.debug(query.build());
 Using Latitude and Longitude as the destination
 ```java
 Q query = new Q(Account.SObjectType)
-    .add(Q.distance('BillingAddress', 37.775, -122.418, QDistance.Unit.mi).isLessThan(20))
+    .add(Q.distanceFrom('BillingAddress').to(37.775, -122.418).inKilometers().isLessThan(20))
 
 System.debug(query.build());
-//SELECT Id FROM Account WHERE DISTANCE(BillingAddress, GEOLOCATION(37.775, -122.418), 'mi') < 20
+//SELECT Id FROM Account WHERE DISTANCE(BillingAddress, GEOLOCATION(37.775, -122.418), 'km') < 20
 ```
 
 ## Roadmap

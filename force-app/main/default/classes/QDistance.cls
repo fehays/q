@@ -6,10 +6,10 @@
 
 public class QDistance extends QCondition {
     
-    public enum Unit { mi, km }
-
-    private Unit distanceUnit;
-
+    private String distanceUnit {
+        private get;
+        private set;
+    }
     private String toLocationField { 
         private get; 
         private set; 
@@ -25,24 +25,36 @@ public class QDistance extends QCondition {
         private set; 
     }
 
-    public QDistance(String fromLocationField, String toLocationField, QDistance.Unit unit) {
-        this(fromLocationField, toLocationField, null, null, unit);
-    }
-
-    public QDistance(String fromLocationField, Decimal toLat, Decimal toLon, QDistance.Unit unit) {
-        this(fromLocationField, null, toLat, toLon, unit);
-    }
-
-    private QDistance(String fromLocationField, String toLocationField, Decimal toLat, Decimal toLon, QDistance.Unit unit) {
+    public QDistance(String fromLocationField) {
         super(fromLocationField);
+        this.distanceUnit = 'mi';        
+    }
+
+    public QDistance to(String toLocationField) {
         this.toLocationField = toLocationField;
+        return this;
+    }
+
+    public QDistance to(Decimal toLat, Decimal toLon) {
         this.toLocationLatitude = toLat;
         this.toLocationLongitude = toLon;
-        this.distanceUnit = unit;
+        return this;
+    }
+
+    public QDistance inMiles() {
+        this.distanceUnit = 'mi';
+        return this;
+    }
+
+    public QDistance inKilometers() {
+        this.distanceUnit = 'km';
+        return this;
     }
 
     public override String build() {
-        String geolocation = '';
+        validate();
+
+        String geolocation = '';        
 
         if (String.isEmpty(this.toLocationField)) {
             geolocation = String.format('GEOLOCATION({0}, {1})', new String[]{
@@ -59,7 +71,18 @@ public class QDistance extends QCondition {
         } else if (super.operatorValue.equals(ComparisonOperator.GREATER_THAN)) {
             return distance + ' > ' + super.fieldValue;
         }
-        throw new QDistanceException('Invalid operator. DISTANCE supports only the logical operators > and <');
+        return '';
+    }
+
+    private void validate() {
+        if (!super.operatorValue.equals(ComparisonOperator.LESS_THAN) && 
+            !super.operatorValue.equals(ComparisonOperator.GREATER_THAN)) {
+                throw new QDistanceException('Invalid operator. DISTANCE supports only the logical operators > and <');
+        }
+
+        if (String.isEmpty(this.toLocationField) && this.toLocationLatitude == null && this.toLocationLongitude == null) {
+            throw new QDistanceException('To location is not set. Call to() method to set up.');
+        }
     }
 
     public class QDistanceException extends Exception {}

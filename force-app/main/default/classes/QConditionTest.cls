@@ -159,32 +159,43 @@ private class QConditionTest {
         System.assertEquals('', query);
     }
   
-    @isTest
+    @IsTest
     static void testDistance() {
-        String segment = new QDistance('BillingAddress', 'LocationField__c', QDistance.Unit.mi).isLessThan(20).build();
+        String segment = new QDistance('BillingAddress').to('LocationField__c').isLessThan(20).build();
         System.assertEquals('DISTANCE(BillingAddress, LocationField__c, \'mi\') < 20', segment);
     }
 
-    @isTest
+    @IsTest
     static void testDistanceGreaterThan() {
-        String segment = new QDistance('BillingAddress', 'LocationField__c', QDistance.Unit.mi).isGreaterThan(20).build();
-        System.assertEquals('DISTANCE(BillingAddress, LocationField__c, \'mi\') > 20', segment);
+        String segment = new QDistance('BillingAddress').to('LocationField__c').inKilometers().isGreaterThan(20).build();
+        System.assertEquals('DISTANCE(BillingAddress, LocationField__c, \'km\') > 20', segment);
     }
 
-    @isTest
+    @IsTest
     static void testDistanceInvalidOperator() {
-        Boolean exceptionThrown = false;
+        String exceptionMessage = '';
         try {
-                String segment = new QDistance('BillingAddress', 'LocationField__c', QDistance.Unit.mi).isEqualTo(20).build();
+            String segment = new QDistance('BillingAddress').to('LocationField__c').isEqualTo(20).build();
         } catch (QDistance.QDistanceException e) {
-                exceptionThrown = true;
+            exceptionMessage = e.getMessage();
         }
-        System.assertEquals(true, exceptionThrown);
+        System.assertEquals(exceptionMessage, 'Invalid operator. DISTANCE supports only the logical operators > and <');
     }
 
-    @isTest
+    @IsTest
+    static void testDistanceToLocationNotSet() {
+        String exceptionMessage = '';
+        try {
+            String segment = new QDistance('BillingAddress').isLessThan(20).build();
+        } catch (QDistance.QDistanceException e) {
+            exceptionMessage = e.getMessage();
+        }
+        System.assertEquals(exceptionMessage, 'To location is not set. Call to() method to set up.');
+    }
+
+    @IsTest
     static void testDistanceLatLon() {
-        String segment = new QDistance('BillingAddress', 37.775, -122.418, QDistance.Unit.mi).isLessThan(20).build();
+        String segment = new QDistance('BillingAddress').to(37.775, -122.418).isLessThan(20).build();
         System.assertEquals('DISTANCE(BillingAddress, GEOLOCATION(37.775, -122.418), \'mi\') < 20', segment);
 	}    
 
