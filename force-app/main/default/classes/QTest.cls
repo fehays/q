@@ -35,7 +35,7 @@ private class QTest {
         }
         String query =
             new Q(Account.SObjectType)
-                .selectFields(SObjectType.Account.fieldSets.Example)
+                .selectFields(SObjectType.Account.fieldSets.getMap().get('Example'))
                 .build();
 
         System.assertEquals('SELECT CreatedById, Description, Owner.Email FROM Account', query);
