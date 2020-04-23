@@ -29,11 +29,11 @@ While chaining methods is a convenient way to initialise your query, you also ha
 Q query = new Q(Contact.SObjectType).addLimit(5);
 
 if (String.isNotBlank(firstName)) {
-  query.add(Q.condition('FirstName').isEqualTo(firstName))
+  query.add(Q.condition('FirstName').isEqualTo(firstName));
 }
 
 if (String.isNotBlank(lastName)) {
-  query.add(Q.condition('LastName').isEqualTo(lastName))
+  query.add(Q.condition('LastName').isEqualTo(lastName));
 }
 
 System.debug(query.build());
@@ -53,11 +53,10 @@ System.debug(query.build());
 
 ## Parenthetical Groups
 ```java
-Q query =
-new Q(Account.SObjectType)
-  .add(Q.orGroup()
-    .add(Q.condition('Name').isEqualTo('Acme 1'))
-    .add(Q.condition('Name').isEqualTo('Acme 2')))
+Q query = new Q(Account.SObjectType)
+    .add(Q.orGroup()
+        .add(Q.condition('Name').isEqualTo('Acme 1'))
+        .add(Q.condition('Name').isEqualTo('Acme 2')));
 
 System.debug(query.build());
 //SELECT Id FROM Account WHERE (Name = 'Acme 1' OR Name = 'Acme 2')
@@ -67,9 +66,8 @@ System.debug(query.build());
 
 Using a custom field as the destiation
 ```java
-Q query =
-  new Q(Account.SObjectType)
-	  .add(Q.distance('BillingAddress', 'CustomLocationField__c', QDistance.Unit.mi).isLessThan(20));
+Q query = new Q(Account.SObjectType)
+    .add(Q.distance('BillingAddress', 'CustomLocationField__c', QDistance.Unit.mi).isLessThan(20));
 
 System.debug(query.build());
 //SELECT Id FROM Account WHERE DISTANCE(BillingAddress, CustomLocationField__c) < 20
@@ -77,9 +75,8 @@ System.debug(query.build());
 
 Using Latitude and Longitude as the destination
 ```java
-Q query =
-  new Q(Account.SObjectType)
-	  .add(Q.distance('BillingAddress', 37.775, -122.418, QDistance.Unit.mi).isLessThan(20))
+Q query = new Q(Account.SObjectType)
+    .add(Q.distance('BillingAddress', 37.775, -122.418, QDistance.Unit.mi).isLessThan(20))
 
 System.debug(query.build());
 //SELECT Id FROM Account WHERE DISTANCE(BillingAddress, GEOLOCATION(37.775, -122.418), 'mi') < 20
