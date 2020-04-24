@@ -172,6 +172,12 @@ private class QConditionTest {
     }
 
     @IsTest
+    static void testDistanceInMiles() {
+        String segment = new QDistance('BillingAddress').to('LocationField__c').inMiles().isGreaterThan(20).build();
+        System.assertEquals('DISTANCE(BillingAddress, LocationField__c, \'mi\') > 20', segment);
+    }
+
+    @IsTest
     static void testDistanceInvalidOperator() {
         String exceptionMessage = '';
         try {
