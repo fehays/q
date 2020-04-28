@@ -42,7 +42,9 @@ public virtual class QCondition implements QICondition {
             return dateString.substring(0, dateString.indexOf(' '));
         } else if (val instanceof QDateLiteral) {
             return ((QDateLiteral)val).buildLiteral();
-        }else {
+        } else if (val instanceof Q) {
+            return ((Q)val).build();
+        } else {
             return val;
         }
     }
@@ -99,9 +101,21 @@ public virtual class QCondition implements QICondition {
         return this;
     }
 
+    public QCondition isIn(Q subQuery) {
+        this.operatorValue = ComparisonOperator.IS_IN;
+        this.fieldValue = subQuery;
+        return this;
+    }
+
     public QCondition isNotIn(Object values) {
         this.operatorValue = ComparisonOperator.NOT_IN;
         this.fieldValue = values;
+        return this;
+    }
+
+    public QCondition isNotIn(Q subQuery) {
+        this.operatorValue = ComparisonOperator.NOT_IN;
+        this.fieldValue = subQuery;
         return this;
     }
 
@@ -145,24 +159,12 @@ public virtual class QCondition implements QICondition {
         } else if (operatorValue.equals(ComparisonOperator.IS_LIKE)) {
             return field + ' LIKE ' + fieldValue;
         } else if (operatorValue.equals(ComparisonOperator.IS_IN)) {
-            if (fieldValue instanceOf QBindVariable) {
-                return field + ' IN ' + fieldValue;	
-            }
             return field + ' IN (' + fieldValue + ')';
         } else if (operatorValue.equals(ComparisonOperator.NOT_IN)) {
-            if (fieldValue instanceOf QBindVariable) {
-                return field + ' NOT IN ' + fieldValue;	
-            }
             return field + ' NOT IN (' + fieldValue + ')';
         } else if (operatorValue.equals(ComparisonOperator.INCLUDES)) {
-            if (fieldValue instanceOf QBindVariable) {
-                return field + ' INCLUDES ' + fieldValue;	
-            }
             return field + ' INCLUDES (' + fieldValue + ')';
         } else if (operatorValue.equals(ComparisonOperator.EXCLUDES)) {
-            if (fieldValue instanceOf QBindVariable) {
-                return field + ' EXCLUDES ' + fieldValue;	
-            }
             return field + ' EXCLUDES (' + fieldValue + ')';
         } else {
             return '';
