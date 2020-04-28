@@ -91,6 +91,17 @@ System.debug(query.build());
 //SELECT Id FROM Account WHERE CreatedDate < LAST_N_DAYS:7
 ```
 
+## Inner Joins
+
+```java
+Q query = new Q(Account.SObjectType)
+    .addSubquery(new Q('Contacts').selectFields(new Set<String> {'Name'}))
+    .add(Q.condition('Id').isIn(new Q(Contact.SObjectType).selectFields(new Set<String> {'AccountId'})));
+
+System.debug(query.build());
+//SELECT (SELECT Name FROM Contacts) FROM Account WHERE Id IN (SELECT AccountId FROM Contact)
+```
+
 ## Roadmap
 
 This library is being initially developed for one of my internal project,
