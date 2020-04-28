@@ -72,7 +72,13 @@ private class QConditionTest {
     static void testIsInBindVar() {
         List<String> names = new List<String>{'John', 'Jane'};
         String segment = new QCondition('Name').isIn(Q.bindVar(':names')).build();
-        System.assertEquals('Name IN :names', segment);
+        System.assertEquals('Name IN (:names)', segment);
+    }
+
+    @IsTest
+    static void testIsInSubQuery() {        
+        String segment = new QCondition('Name').isIn(new Q(Account.SObjectType).selectFields(new Set<String> {'Name'})).build();
+        System.assertEquals('Name IN (SELECT Name FROM Account)', segment);
     }
 
     @IsTest
@@ -86,7 +92,13 @@ private class QConditionTest {
     static void testIsNotInBindVar() {
         List<String> names = new List<String>{'John', 'Jane'};
         String segment = new QCondition('Name').isNotIn(Q.bindVar(':names')).build();
-        System.assertEquals('Name NOT IN :names', segment);
+        System.assertEquals('Name NOT IN (:names)', segment);
+    }
+
+    @IsTest
+    static void testIsNotInSubQuery() {        
+        String segment = new QCondition('Name').isNotIn(new Q(Account.SObjectType).selectFields(new Set<String> {'Name'})).build();
+        System.assertEquals('Name NOT IN (SELECT Name FROM Account)', segment);
     }
 
     @IsTest
@@ -100,7 +112,7 @@ private class QConditionTest {
     static void testIncludesBindVar() {
         List<String> markets = new List<String>{'APAC', 'EMEA'};
         String segment = new QCondition('Market').includes(q.bindVar(':markets')).build();
-        System.assertEquals('Market INCLUDES :markets', segment);
+        System.assertEquals('Market INCLUDES (:markets)', segment);
     }
 
     @IsTest
@@ -114,7 +126,7 @@ private class QConditionTest {
     static void testExcludesBindVar() {
         List<String> markets = new List<String>{'APAC', 'EMEA'};
         String segment = new QCondition('Market').excludes(q.bindVar(':markets')).build();
-        System.assertEquals('Market EXCLUDES :markets', segment);
+        System.assertEquals('Market EXCLUDES (:markets)', segment);
     }
 
     @IsTest

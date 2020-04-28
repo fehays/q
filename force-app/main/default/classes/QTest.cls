@@ -117,7 +117,7 @@ private class QTest {
                 .add(Q.condition('Name').isIn(Q.bindVar(':listOfNames')))
                 .build();
 
-        System.assertEquals('SELECT Id FROM Account WHERE Name IN :listOfNames', query);
+        System.assertEquals('SELECT Id FROM Account WHERE Name IN (:listOfNames)', query);
     }
   
     @IsTest
@@ -235,5 +235,25 @@ private class QTest {
 
         System.assertEquals('SELECT Id FROM Account WHERE DISTANCE(BillingAddress, GEOLOCATION(37.775, -122.418), \'mi\') < 20', query);
         Database.query(query);
+    }
+
+    @IsTest
+    static void testIsInSubQuery() {        
+        String query =		
+            new Q(Account.SObjectType)
+                .add(Q.condition('Name').isIn(new Q(Account.SObjectType).selectFields(new Set<String> {'Name'})))
+                .build();
+
+        System.assertEquals('SELECT Id FROM Account WHERE Name IN (SELECT Name FROM Account)', query);
+    }
+
+    @IsTest
+    static void testIsNotInSubQuery() {        
+        String query =		
+            new Q(Account.SObjectType)
+                .add(Q.condition('Name').isNotIn(new Q(Account.SObjectType).selectFields(new Set<String> {'Name'})))
+                .build();
+
+        System.assertEquals('SELECT Id FROM Account WHERE Name NOT IN (SELECT Name FROM Account)', query);
     }
 }
