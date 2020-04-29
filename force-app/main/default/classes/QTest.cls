@@ -182,6 +182,7 @@ private class QTest {
                 .add(sbOrGroup)
                 .build();
 
+        System.assertEquals(true, sbOrGroup.hasConditions);
         System.assertEquals('SELECT Id FROM Account WHERE (Name = \'test\' OR Name = \'test\')', query);
         Database.query(query);
     }
