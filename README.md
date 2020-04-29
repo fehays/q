@@ -102,6 +102,28 @@ System.debug(query.build());
 //SELECT (SELECT Name FROM Contacts) FROM Account WHERE Id IN (SELECT AccountId FROM Contact)
 ```
 
+## Polymorphic Relationships (TYPEOF)
+
+```java
+String query = new Q(Event.SObjectType)
+    .selectFields(Q.typeOf('What')
+        .when('Account').then(new Set<String> {'Phone', 'NumberOfEmployees'})   
+        .when('Opportunity').then(new Set<String> {'Amount', 'CloseDate'})                 
+        .otherwise(new Set<String> {'Name', 'Email'})
+    );
+    
+System.debug(query.build());
+/*
+SELECT
+    TYPEOF What
+    WHEN Account THEN Phone,NumberOfEmployees
+    WHEN Opportunity THEN Amount,CloseDate
+    ELSE Name,Email
+    END
+FROM Event
+*/
+```
+
 ## Roadmap
 
 This library is being initially developed for one of my internal project,
