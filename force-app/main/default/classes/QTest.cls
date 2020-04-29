@@ -225,7 +225,7 @@ private class QTest {
         Database.query(query);
     }
 
-    @isTest
+    @IsTest
     static void testDistance() {
 
         String query =
@@ -255,5 +255,28 @@ private class QTest {
                 .build();
 
         System.assertEquals('SELECT Id FROM Account WHERE Name NOT IN (SELECT Name FROM Account)', query);
+    }
+
+    @IsTest
+    static void testTypeOf() {
+        String query =
+            new Q(Event.SObjectType)
+                .selectFields(Q.typeOf('What')
+                    .when('Account').then(new Set<String> {'Phone', 'NumberOfEmployees'})   
+                    .when('Opportunity').then(new Set<String> {'Amount', 'CloseDate'})                 
+                    .otherwise(new Set<String> {'Name', 'Email'})
+                )
+                .build();
+
+        String expected = 'SELECT ' + 
+                            'TYPEOF What ' +
+                            'WHEN Account THEN Phone,NumberOfEmployees ' +
+                            'WHEN Opportunity THEN Amount,CloseDate ' +
+                            'ELSE Name,Email ' +
+                            'END ' +
+                        'FROM Event';
+
+        System.assertEquals(expected, query);
+        Database.query(query);
     }
 }

@@ -10,6 +10,7 @@ public class Q {
     private Integer numberOfRowsToSkip;
 
     private Set<String> fieldList = new Set<String>();
+    private List<QTypeOf.QTypeOfBuilder> typeOfList = new List<QTypeOf.QTypeOfBuilder>();
     private Set<String> groupBy = new Set<String>();
     private List<QOrder> orders = new List<QOrder>();
     private List<QICondition> conditions = new List<QICondition>();
@@ -67,6 +68,14 @@ public class Q {
     }
 
     /*
+     * Instantiate a QTypeOf object for polymorphic relationship query support
+     */
+    public static QTypeOf.QTypeOfBuilder typeOf(String fieldName) {
+        QTypeOf.QTypeOfBuilder typeOf = new QTypeOf.QTypeOfBuilder(fieldName);
+        return typeOf;
+    }
+
+    /*
      * Add an OrderBy statement
      */
     public Q add(QOrder ob) {
@@ -107,6 +116,14 @@ public class Q {
         for(String field : fields) {
             this.fieldList.add(field);
         }
+        return this;
+    }
+
+    /*
+     * Add fields to the SELECT statement with TYPEOF logic
+     */
+    public Q selectFields(QTypeOf.QTypeOfBuilder typeOf) {
+        this.typeOfList.add(typeOf);
         return this;
     }
 
@@ -172,6 +189,10 @@ public class Q {
     public String buildSelect() {
         for (Q qb : this.subQueries) {
             this.fieldList.add('(' + qb.build() + ')');
+        }
+
+        for (QTypeOf.QTypeOfBuilder typeOfVal : this.typeOfList) {
+            this.fieldList.add(typeOfVal.build());
         }
 
         if (!this.fieldList.isEmpty()) {
