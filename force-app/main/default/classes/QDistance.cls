@@ -52,7 +52,9 @@ public class QDistance extends QCondition {
     }
 
     public override String build() {
-        validate();
+        if (String.isEmpty(this.toLocationField) && this.toLocationLatitude == null && this.toLocationLongitude == null) {
+            throw new QDistanceException('To location is not set. Call to() method to set up.');
+        }
 
         String geolocation = '';        
 
@@ -66,22 +68,16 @@ public class QDistance extends QCondition {
 
         String distance = 'DISTANCE(' + super.field + ', ' + geolocation + ', \'' + String.valueOf(this.distanceUnit) + '\')';
 
-        if (super.operatorValue.equals(ComparisonOperator.LESS_THAN)) {
-            return distance + ' < ' + super.fieldValue;
-        } else if (super.operatorValue.equals(ComparisonOperator.GREATER_THAN)) {
-            return distance + ' > ' + super.fieldValue;
-        }
-        return '';
-    }
-
-    private void validate() {
-        if (!super.operatorValue.equals(ComparisonOperator.LESS_THAN) && 
-            !super.operatorValue.equals(ComparisonOperator.GREATER_THAN)) {
+        switch on super.operatorValue {
+            when LESS_THAN {
+                return distance + ' < ' + super.fieldValue;
+            }
+            when GREATER_THAN {
+                return distance + ' > ' + super.fieldValue;
+            }
+            when else {
                 throw new QDistanceException('Invalid operator. DISTANCE supports only the logical operators > and <');
-        }
-
-        if (String.isEmpty(this.toLocationField) && this.toLocationLatitude == null && this.toLocationLongitude == null) {
-            throw new QDistanceException('To location is not set. Call to() method to set up.');
+            }
         }
     }
 
