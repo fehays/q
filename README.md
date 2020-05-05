@@ -70,7 +70,7 @@ Q query = new Q(Account.SObjectType)
     .add(Q.distanceFrom('BillingAddress').to('CustomLocationField__c').isLessThan(20));
 
 System.debug(query.build());
-//SELECT Id FROM Account WHERE DISTANCE(BillingAddress, CustomLocationField__c) < 20
+//SELECT Id FROM Account WHERE DISTANCE(BillingAddress, CustomLocationField__c, 'mi') < 20
 ```
 
 Using Latitude and Longitude as the destination
