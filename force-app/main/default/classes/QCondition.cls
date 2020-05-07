@@ -167,15 +167,27 @@ public virtual class QCondition implements QICondition {
                 return field + ' LIKE ' + fieldValue;
             }
             when  IS_IN {
+                if (fieldValue instanceof QBindVariable) {
+                    return field + ' IN ' + fieldValue;
+                }
                 return field + ' IN (' + fieldValue + ')';
             }
             when  NOT_IN {
+                if (fieldValue instanceof QBindVariable) {
+                    return field + ' NOT IN ' + fieldValue;
+                }
                 return field + ' NOT IN (' + fieldValue + ')';
             }
             when  INCLUDES {
+                if (fieldValue instanceof QBindVariable) {
+                    return field + ' INCLUDES ' + fieldValue;
+                }
                 return field + ' INCLUDES (' + fieldValue + ')';
             }
             when  EXCLUDES {
+                if (fieldValue instanceof QBindVariable) {
+                    return field + ' EXCLUDES ' + fieldValue;
+                }
                 return field + ' EXCLUDES (' + fieldValue + ')';
             }
             when else {

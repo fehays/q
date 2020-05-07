@@ -117,7 +117,8 @@ private class QTest {
                 .add(Q.condition('Name').isIn(Q.bindVar(':listOfNames')))
                 .build();
 
-        System.assertEquals('SELECT Id FROM Account WHERE Name IN (:listOfNames)', query);
+        System.assertEquals('SELECT Id FROM Account WHERE Name IN :listOfNames', query);
+        Database.query(query);
     }
   
     @IsTest
